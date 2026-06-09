@@ -141,3 +141,20 @@ apiKeySaveBtn.addEventListener("click", () => {
 function applyApiKey(key) {
   globalThis.__FOOTBALL_API_KEY__ = key;
 }
+
+// ── ERROR HANDLER ───────────────────────────────────────────
+function friendlyError(err) {
+  if (err.message.includes("No API key"))
+    return "⚠️ Enter your API key above";
+
+  if (err.message.includes("rate limit"))
+    return "⚠️ Rate limit reached (100 req/day free plan)";
+
+  if (err.message.includes("401") || err.message.includes("403"))
+    return "⚠️ Invalid API key";
+
+  if (err.message.includes("season"))
+    return "⚠️ This league/season is not available on free plan";
+
+  return `⚠️ ${err.message}`;
+}
