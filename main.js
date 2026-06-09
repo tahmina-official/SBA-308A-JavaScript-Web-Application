@@ -63,3 +63,4 @@ leagueSelect.addEventListener("change", () => {
   state.setLeague(league);
   loadCurrentTab();
 });
+
