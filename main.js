@@ -115,6 +115,26 @@ async function loadFixtures(leagueId, season) {
   }
 }
 
+
+// ── STANDINGS
+//=======================================================================
+async function loadStandings(leagueId, season) {
+  ui.setLoading("spinner-standings", true);
+  standingsGrid.innerHTML = "";
+
+  try {
+    const standings = await api.fetchStandings(leagueId, season);
+    state.setStandings(standings);
+    ui.renderStandings(standings, standingsGrid);
+
+  } catch (err) {
+    console.error(err);
+    standingsGrid.innerHTML = `<div class="empty error">${friendlyError(err)}</div>`;
+  } finally {
+    ui.setLoading("spinner-standings", false);
+  }
+}
+
 // ── API KEY HANDLING //=======================================================================
 const savedKey = localStorage.getItem("football_api_key");
 
@@ -142,7 +162,8 @@ function applyApiKey(key) {
   globalThis.__FOOTBALL_API_KEY__ = key;
 }
 
-// ── ERROR HANDLER ───────────────────────────────────────────
+// ── ERROR HANDLER 
+//=======================================================================
 function friendlyError(err) {
   if (err.message.includes("No API key"))
     return "⚠️ Enter your API key above";
@@ -157,4 +178,12 @@ function friendlyError(err) {
     return "⚠️ This league/season is not available on free plan";
 
   return `⚠️ ${err.message}`;
+}
+
+// ── INIT 
+//=======================================================================
+activateTab("fixtures");
+
+if (savedKey) {
+  loadCurrentTab();
 }
