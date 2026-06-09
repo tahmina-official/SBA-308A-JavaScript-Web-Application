@@ -26,7 +26,8 @@ const apiKeyBanner = document.getElementById("api-key-banner");
 const apiKeyInput = document.getElementById("api-key-input");
 const apiKeySaveBtn = document.getElementById("api-key-save");
 
-// ── Populate league dropdown ───────────────────────────────
+// ── Populate league dropdown
+//=======================================================================
 state.LEAGUES.forEach((l, i) => {
   const opt = document.createElement("option");
   opt.value = i;
@@ -34,7 +35,8 @@ state.LEAGUES.forEach((l, i) => {
   leagueSelect.appendChild(opt);
 });
 
-// ── Tab switching ───────────────────────────────────────────
+// ── Tab switching
+//=======================================================================
 function activateTab(tab) {
   state.setTab(tab);
 
@@ -53,3 +55,11 @@ tabBtns.forEach(btn =>
     loadCurrentTab();
   })
 );
+
+// ── League change 
+//=======================================================================
+leagueSelect.addEventListener("change", () => {
+  const league = state.LEAGUES[leagueSelect.value];
+  state.setLeague(league);
+  loadCurrentTab();
+});
