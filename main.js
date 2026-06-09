@@ -1,5 +1,9 @@
 // main.js — Entry point: wires events, orchestrates api/ui/state
 
+
+import * as ui from "./ui.js";
+import * as state from "./state.js";
+
 // DOM 
 //=======================================================================
 const leagueSelect = document.getElementById("league-select");
@@ -21,3 +25,11 @@ const teamSearchBtn = document.getElementById("team-search-btn");
 const apiKeyBanner = document.getElementById("api-key-banner");
 const apiKeyInput = document.getElementById("api-key-input");
 const apiKeySaveBtn = document.getElementById("api-key-save");
+
+// ── Populate league dropdown ───────────────────────────────
+state.LEAGUES.forEach((l, i) => {
+  const opt = document.createElement("option");
+  opt.value = i;
+  opt.textContent = `${l.flag} ${l.name}`;
+  leagueSelect.appendChild(opt);
+});
