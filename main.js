@@ -1,6 +1,7 @@
 // main.js — Entry point: wires events, orchestrates api/ui/state
 
 
+import * as api from "./api.js";
 import * as ui from "./ui.js";
 import * as state from "./state.js";
 
@@ -64,3 +65,14 @@ leagueSelect.addEventListener("change", () => {
   loadCurrentTab();
 });
 
+// ── Load active tab ─────────────────────────────────────────
+async function loadCurrentTab() {
+  if (!globalThis.__FOOTBALL_API_KEY__) return;
+
+  const { activeTab, activeLeague } = state.getState();
+  const { id, season } = activeLeague;
+
+  if (activeTab === "fixtures") await loadFixtures(id, season);
+  if (activeTab === "standings") await loadStandings(id, season);
+  if (activeTab === "stats") await loadTopPlayers(id, season);
+}
