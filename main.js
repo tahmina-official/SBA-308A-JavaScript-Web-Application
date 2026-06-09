@@ -65,7 +65,8 @@ leagueSelect.addEventListener("change", () => {
   loadCurrentTab();
 });
 
-// ── Load active tab ─────────────────────────────────────────
+// ── Load active tab 
+//=======================================================================
 async function loadCurrentTab() {
   if (!globalThis.__FOOTBALL_API_KEY__) return;
 
@@ -75,4 +76,68 @@ async function loadCurrentTab() {
   if (activeTab === "fixtures") await loadFixtures(id, season);
   if (activeTab === "standings") await loadStandings(id, season);
   if (activeTab === "stats") await loadTopPlayers(id, season);
+}
+
+// ── FIXTURES (FIXED FOR FREE TIER) 
+//=======================================================================
+async function loadFixtures(leagueId, season) {
+  ui.setLoading("spinner-fixtures", true);
+  fixturesGrid.innerHTML = "";
+
+  try {
+    const fixtures = await api.fetchFixturesBySeason(leagueId, season);
+
+    if (!fixtures.length) {
+      fixturesGrid.innerHTML =
+        `<div class="empty">No fixtures found for this league/season.</div>`;
+      return;
+    }
+
+    const now = new Date();
+
+    const recent = fixtures.filter(f =>
+      new Date(f.fixture.date) < now && f.fixture.status.short === "FT"
+    );
+
+    const upcoming = fixtures.filter(f =>
+      new Date(f.fixture.date) >= now
+    );
+
+    state.setFixtures(recent, upcoming);
+    ui.renderFixtures(recent, upcoming, fixturesGrid);
+
+  } catch (err) {
+    console.error(err);
+    fixturesGrid.innerHTML =
+      `<div class="empty error">${friendlyError(err)}</div>`;
+  } finally {
+    ui.setLoading("spinner-fixtures", false);
+  }
+}
+
+// ── API KEY HANDLING //=======================================================================
+const savedKey = localStorage.getItem("football_api_key");
+
+if (savedKey) {
+  applyApiKey(savedKey);
+  apiKeyBanner.hidden = true;
+} else {
+  apiKeyBanner.hidden = false;
+}
+
+apiKeySaveBtn.addEventListener("click", () => {
+  const key = apiKeyInput.value.trim();
+  if (!key) return;
+
+  localStorage.setItem("football_api_key", key);
+  applyApiKey(key);
+
+  apiKeyBanner.hidden = true;
+  ui.showToast("API key saved!", "success");
+
+  loadCurrentTab();
+});
+
+function applyApiKey(key) {
+  globalThis.__FOOTBALL_API_KEY__ = key;
 }
