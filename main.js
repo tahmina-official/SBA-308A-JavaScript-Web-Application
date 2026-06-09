@@ -135,6 +135,31 @@ async function loadStandings(leagueId, season) {
   }
 }
 
+// ── TOP PLAYERS
+//=======================================================================
+async function loadTopPlayers(leagueId, season) {
+  ui.setLoading("spinner-stats", true);
+  statsGrid.innerHTML = "";
+
+  try {
+    const [scorers, assists] = await Promise.all([
+      api.fetchTopScorers(leagueId, season),
+      api.fetchTopAssists(leagueId, season),
+    ]);
+
+    state.setTopScorers(scorers);
+    state.setTopAssists(assists);
+
+    ui.renderTopPlayers(scorers, assists, statsGrid);
+
+  } catch (err) {
+    console.error(err);
+    statsGrid.innerHTML = `<div class="empty error">${friendlyError(err)}</div>`;
+  } finally {
+    ui.setLoading("spinner-stats", false);
+  }
+}
+
 // ── API KEY HANDLING //=======================================================================
 const savedKey = localStorage.getItem("football_api_key");
 
