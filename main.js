@@ -33,3 +33,23 @@ state.LEAGUES.forEach((l, i) => {
   opt.textContent = `${l.flag} ${l.name}`;
   leagueSelect.appendChild(opt);
 });
+
+// ── Tab switching ───────────────────────────────────────────
+function activateTab(tab) {
+  state.setTab(tab);
+
+  tabBtns.forEach(b =>
+    b.classList.toggle("active", b.dataset.tab === tab)
+  );
+
+  fixturesPane.hidden = tab !== "fixtures";
+  standingsPane.hidden = tab !== "standings";
+  statsPane.hidden = tab !== "stats";
+}
+
+tabBtns.forEach(btn =>
+  btn.addEventListener("click", () => {
+    activateTab(btn.dataset.tab);
+    loadCurrentTab();
+  })
+);
