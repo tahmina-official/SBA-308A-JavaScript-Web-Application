@@ -160,6 +160,60 @@ async function loadTopPlayers(leagueId, season) {
   }
 }
 
+// ── TEAM SEARCH 
+//=======================================================================
+async function doTeamSearch() {
+  const q = teamSearchInput.value.trim();
+  if (q.length < 2) return;
+
+  ui.setLoading("spinner-team-search", true);
+  teamSearchResults.innerHTML = "";
+
+  try {
+    const teams = await api.searchTeams(q);
+    state.setTeamSearch(teams);
+
+    ui.renderTeamSearch(teams, teamSearchResults, onTeamSelect);
+
+  } catch (err) {
+    ui.showToast(friendlyError(err), "error");
+  } finally {
+    ui.setLoading("spinner-team-search", false);
+  }
+}
+
+async function onTeamSelect(team) {
+  teamSearchResults.innerHTML = "";
+  teamSearchInput.value = team.name;
+
+  ui.setLoading("spinner-team-stats", true);
+
+  const { activeLeague } = state.getState();
+
+  try {
+    const stats = await api.fetchTeamStats(
+      team.id,
+      activeLeague.id,
+      activeLeague.season
+    );
+
+    state.setSelectedTeamStats(stats);
+
+    const container = document.getElementById("team-stats-container");
+    ui.renderTeamStats(stats, container);
+
+  } catch (err) {
+    ui.showToast("Couldn't load team stats", "error");
+  } finally {
+    ui.setLoading("spinner-team-stats", false);
+  }
+}
+
+teamSearchBtn.addEventListener("click", doTeamSearch);
+teamSearchInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") doTeamSearch();
+});
+
 // ── API KEY HANDLING //=======================================================================
 const savedKey = localStorage.getItem("football_api_key");
 
