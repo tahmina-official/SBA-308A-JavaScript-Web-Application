@@ -629,15 +629,22 @@ main {
 .biggest strong { color: var(--text); }
 
 /* Players list */
-.stats-section { }
+.stats-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
 .stats-section-title {
   font-family: var(--font-display);
   font-size: 1.2rem;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  margin-bottom: 0.8rem;
-  padding-bottom: 0.4rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border);
 }
 

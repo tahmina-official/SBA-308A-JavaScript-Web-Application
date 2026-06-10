@@ -1,5 +1,12 @@
-// state.js — Central application state (FREE TIER SAFE - 2022 season)
+// ─────────────────────────────────────────────────────────────
+// state.js — Central application state
+//
+// All data the app needs to remember lives here.
+// Other files import getters/setters instead of touching _state directly.
+// ─────────────────────────────────────────────────────────────
 
+// The 6 leagues users can choose from.
+// Season 2022 is used because it's fully available on the free API plan.
 export const LEAGUES = [
   { id: 39,  name: "Premier League",   season: 2022, flag: "🏴" },
   { id: 140, name: "La Liga",          season: 2022, flag: "🇪🇸" },
@@ -9,35 +16,39 @@ export const LEAGUES = [
   { id: 2,   name: "Champions League", season: 2022, flag: "🏆" },
 ];
 
+// The one private object that holds all app state.
+// Never export this directly — use the getters/setters below.
 const _state = {
-  activeTab: "fixtures",
-  activeLeague: LEAGUES[0],
+  activeTab: "fixtures",        // which tab is visible right now
+  activeLeague: LEAGUES[0],     // which league is selected
 
-  fixtures: [],
-  nextFixtures: [],
+  recentFixtures: [],           // finished matches
+  upcomingFixtures: [],         // scheduled / live matches
 
-  standings: [],
+  standings: [],                // league table rows
 
-  topScorers: [],
-  topAssists: [],
+  topScorers: [],               // top 10 scorers for the season
+  topAssists: [],               // top 10 assisters for the season
 
-  teamSearchResults: [],
-  playerSearchResults: [],
-
-  selectedTeamStats: null,
-
-  loading: {
-    fixtures: false,
-    standings: false,
-    stats: false,
-  },
+  teamSearchResults: [],        // results from a team name search
+  selectedTeamStats: null,      // full stats card for the chosen team
 };
 
-// ── getters ───────────────────────────────────────────────
-export const getState = () => ({ ..._state });
-export const getLeague = () => _state.activeLeague;
 
-// ── setters ───────────────────────────────────────────────
+// ── Getters ──────────────────────────────────────────────────
+// Return a shallow copy so callers can't accidentally mutate _state.
+
+export function getState() {
+  return { ..._state };
+}
+
+export function getActiveLeague() {
+  return _state.activeLeague;
+}
+
+
+// ── Setters ──────────────────────────────────────────────────
+
 export function setTab(tab) {
   _state.activeTab = tab;
 }
@@ -46,35 +57,27 @@ export function setLeague(league) {
   _state.activeLeague = league;
 }
 
-export function setFixtures(recent, next) {
-  _state.fixtures = recent;
-  _state.nextFixtures = next;
+export function setFixtures(recent, upcoming) {
+  _state.recentFixtures   = recent;
+  _state.upcomingFixtures = upcoming;
 }
 
-export function setStandings(data) {
-  _state.standings = data;
+export function setStandings(rows) {
+  _state.standings = rows;
 }
 
-export function setTopScorers(data) {
-  _state.topScorers = data;
+export function setTopScorers(players) {
+  _state.topScorers = players;
 }
 
-export function setTopAssists(data) {
-  _state.topAssists = data;
+export function setTopAssists(players) {
+  _state.topAssists = players;
 }
 
-export function setTeamSearch(data) {
-  _state.teamSearchResults = data;
+export function setTeamSearch(teams) {
+  _state.teamSearchResults = teams;
 }
 
-export function setPlayerSearch(data) {
-  _state.playerSearchResults = data;
-}
-
-export function setSelectedTeamStats(data) {
-  _state.selectedTeamStats = data;
-}
-
-export function setLoading(key, value) {
-  _state.loading[key] = value;
+export function setSelectedTeamStats(stats) {
+  _state.selectedTeamStats = stats;
 }

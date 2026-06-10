@@ -2,129 +2,132 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kickoff — Football Dashboard</title>
-    <link rel="stylesheet" href="./styles.css" />
-    <script type="module" src="./main.js" defer></script>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kickoff — Football Dashboard</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <!-- main.js is the entry point; it imports api.js, ui.js, and state.js -->
+  <script type="module" src="./main.js" defer></script>
+  <!-- Emoji favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>" />
 </head>
 
 <body>
 
-    <!-- ── API Key Banner ───────────────────────────────────────────────────── -->
-    <div id="api-key-banner">
-        <div class="banner-left">
-            <p>
-                <strong>API key required.</strong>
-                Get your free key at
-                <a href="https://dashboard.api-football.com/" target="_blank" rel="noopener">
-                    API-Football Dashboard
-                </a>
-                (free plan available).
-            </p>
-        </div>
-
-        <div class="key-input-group">
-            <input id="api-key-input" type="password" placeholder="Paste your API key here…" autocomplete="off" />
-            <button id="api-key-save">Save & Load</button>
-        </div>
+  <!-- ── API Key Banner ──────────────────────────────────────────────────── -->
+  <!-- Shown on first visit. Hidden once a key is saved to localStorage. -->
+  <div id="api-key-banner">
+    <div class="banner-left">
+      <p>
+        <strong>API key required.</strong>
+        Get your free key at
+        <a href="https://dashboard.api-football.com/" target="_blank" rel="noopener">
+          API-Football Dashboard
+        </a>
+        (free plan: 100 requests/day).
+      </p>
     </div>
 
-    <!-- ── Header ──────────────────────────────────────────────────────────── -->
-    <header>
-        <div class="header-inner">
-            <div class="brand">
-                <span class="brand-icon">⚽</span>
-                <div>
-                    <h1>Kick<span>off</span></h1>
-                    <span class="header-sub">Football Dashboard · API-Football v3</span>
-                </div>
-            </div>
+    <div class="key-input-group">
+      <input id="api-key-input" type="password"
+             placeholder="Paste your API key here…" autocomplete="off" />
+      <button id="api-key-save">Save &amp; Load</button>
+    </div>
+  </div>
 
-            <div class="league-selector">
-                <label for="league-select">League</label>
-                <select id="league-select"></select>
-            </div>
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-icon">⚽</span>
+        <div>
+          <h1>Kick<span>off</span></h1>
+          <span class="header-sub">Football Dashboard · API-Football v3</span>
         </div>
-    </header>
+      </div>
 
-    <!-- ── Tabs ────────────────────────────────────────────────────────────── -->
-    <nav class="tabs" aria-label="Main navigation">
-        <div class="tabs-inner">
-            <button class="tab-btn active" data-tab="fixtures">Fixtures</button>
-            <button class="tab-btn" data-tab="standings">Standings</button>
-            <button class="tab-btn" data-tab="stats">Stats</button>
-        </div>
-    </nav>
+      <!-- League picker — options are populated by main.js -->
+      <div class="league-selector">
+        <label for="league-select">League</label>
+        <select id="league-select"></select>
+      </div>
+    </div>
+  </header>
 
-    <!-- ── Main ────────────────────────────────────────────────────────────── -->
-    <main>
+  <!-- ── Navigation tabs ─────────────────────────────────────────────────── -->
+  <nav class="tabs" aria-label="Main navigation">
+    <div class="tabs-inner">
+      <button class="tab-btn active" data-tab="fixtures">Fixtures</button>
+      <button class="tab-btn"        data-tab="standings">Standings</button>
+      <button class="tab-btn"        data-tab="stats">Stats</button>
+    </div>
+  </nav>
 
-        <!-- FIXTURES PANE -->
-        <div id="pane-fixtures">
-            <div id="spinner-fixtures" class="spinner-wrap" hidden>
-                <div class="ring"></div>
-            </div>
-            <div id="fixtures-grid"></div>
-        </div>
+  <!-- ── Main content ────────────────────────────────────────────────────── -->
+  <main>
 
-        <!-- STANDINGS PANE -->
-        <div id="pane-standings" hidden>
-            <div id="spinner-standings" class="spinner-wrap" hidden>
-                <div class="ring"></div>
-            </div>
-            <div id="standings-grid"></div>
-        </div>
+    <!-- FIXTURES PANE -->
+    <div id="pane-fixtures">
+      <div id="spinner-fixtures" class="spinner-wrap" hidden>
+        <div class="ring"></div>
+      </div>
+      <div id="fixtures-grid"></div>
+    </div>
 
-        <!-- STATS PANE -->
-        <div id="pane-stats" hidden>
-            <div class="stats-layout">
+    <!-- STANDINGS PANE -->
+    <div id="pane-standings" hidden>
+      <div id="spinner-standings" class="spinner-wrap" hidden>
+        <div class="ring"></div>
+      </div>
+      <div id="standings-grid"></div>
+    </div>
 
-                <!-- Team search -->
-                <div class="team-search-box">
-                    <h3>🔍 Team Statistics</h3>
-                    <div class="search-row">
-                        <input id="team-search-input" class="search-input" type="text"
-                            placeholder="Search a team (e.g. Arsenal, Barcelona)…" />
-                        <button id="team-search-btn" class="search-btn">Search</button>
-                    </div>
-                    <div id="spinner-team-search" class="spinner-wrap" hidden>
-                        <div class="ring"></div>
-                    </div>
-                    <div id="team-search-results"></div>
-                </div>
+    <!-- STATS PANE -->
+    <div id="pane-stats" hidden>
+      <div class="stats-layout">
 
-                <!-- Team stats card -->
-                <div id="team-stats-outer">
-                    <div id="spinner-team-stats" class="spinner-wrap" hidden>
-                        <div class="ring"></div>
-                    </div>
-                    <div id="team-stats-container">
-                        <div class="empty">Search for a team above to see statistics.</div>
-                    </div>
-                </div>
-
-                <!-- Top scorers + assists -->
-                <div id="stats-grid">
-                    <div id="spinner-stats" class="spinner-wrap" hidden>
-                        <div class="ring"></div>
-                    </div>
-                </div>
-
-            </div>
+        <!-- Team search bar (spans full width) -->
+        <div class="team-search-box">
+          <h3>🔍 Team Statistics</h3>
+          <div class="search-row">
+            <input id="team-search-input" class="search-input" type="text"
+                   placeholder="Search a team (e.g. Arsenal, Barcelona)…" />
+            <button id="team-search-btn" class="search-btn">Search</button>
+          </div>
+          <div id="spinner-team-search" class="spinner-wrap" hidden>
+            <div class="ring"></div>
+          </div>
+          <div id="team-search-results"></div>
         </div>
 
-    </main>
+        <!-- Team stats card (left column) -->
+        <div id="team-stats-outer">
+          <div id="spinner-team-stats" class="spinner-wrap" hidden>
+            <div class="ring"></div>
+          </div>
+          <div id="team-stats-container">
+            <div class="empty">Search for a team above to see statistics.</div>
+          </div>
+        </div>
 
-    <!-- ── Footer ──────────────────────────────────────────────────────────── -->
-    <footer>
-        Data provided by <a href="https://www.api-football.com/" target="_blank" rel="noopener">API-Football</a> · Free
-        Plan (Dashboard API)
-    </footer>
+        <!-- Top scorers + assists (right column) -->
+        <div id="stats-grid">
+          <div id="spinner-stats" class="spinner-wrap" hidden>
+            <div class="ring"></div>
+          </div>
+        </div>
 
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ──────────────────────────────────────────────────────────── -->
+  <footer>
+    Data provided by
+    <a href="https://www.api-football.com/" target="_blank" rel="noopener">API-Football</a>
+    · Free Plan
+  </footer>
 
 </body>
-
 </html>
