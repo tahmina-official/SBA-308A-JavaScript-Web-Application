@@ -2,6 +2,8 @@
 
 A modern, responsive football dashboard built with **vanilla JavaScript**, powered by the **API-Football v3 API**.
 
+🌐 Live Demo: https://tahmina-official.github.io/SBA-308A-JavaScript-Web-Application/
+
 ## Features
 
 | Tab | What it does |
